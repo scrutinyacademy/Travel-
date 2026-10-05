@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nausheen's interactive Hyderabad to Thailand or Kerala travel itinerary planner." />
+  <title>Nausheen's Travel Atlas | Hyderabad to Thailand or Kerala</title>
+  <style>
+    :root{
+      --ink:#24313a;--muted:#62727c;--paper:#fffdf9;--card:rgba(255,255,255,.88);
+      --coral:#ef6f61;--teal:#147d7e;--gold:#e7ad4c;--lav:#7667a8;--line:#e7e0d7;
+      --shadow:0 16px 45px rgba(54,61,68,.12);--radius:24px;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:
+      radial-gradient(circle at 5% 8%,#fee7db 0 10%,transparent 28%),
+      radial-gradient(circle at 95% 20%,#d9f0ed 0 12%,transparent 30%),
+      linear-gradient(135deg,#fffaf2,#f6fbfa 48%,#fbf7ff);color:var(--ink);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+    a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+    button,select,input{font:inherit}.shell{width:min(1180px,92vw);margin:auto}
+    .hero{padding:54px 0 28px}.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:26px;align-items:stretch}
+    .hero-main,.postcard{border:1px solid rgba(255,255,255,.75);box-shadow:var(--shadow);border-radius:32px;overflow:hidden}
+    .hero-main{padding:48px;background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,247,237,.9));position:relative}
+    .hero-main:after{content:"✈";position:absolute;right:38px;top:26px;font-size:72px;opacity:.08;transform:rotate(-15deg)}
+    .eyebrow{letter-spacing:.18em;text-transform:uppercase;font-size:.74rem;font-weight:800;color:var(--coral)}
+    h1{font-family:Georgia,serif;font-size:clamp(2.7rem,6vw,5.8rem);line-height:.92;margin:14px 0 20px;letter-spacing:-.05em}
+    .hero p{font-size:1.05rem;color:var(--muted);max-width:700px}.hero-note{display:inline-flex;gap:9px;align-items:center;background:#fff3dd;padding:10px 14px;border-radius:999px;font-size:.86rem;font-weight:700}
+    .postcard{min-height:340px;background:linear-gradient(150deg,#167e7e,#236c77 42%,#584e88);color:white;padding:34px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+    .postcard:before,.postcard:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.1)}
+    .postcard:before{width:240px;height:240px;right:-90px;top:-60px}.postcard:after{width:140px;height:140px;left:-40px;bottom:-55px}
+    .route-big{font-family:Georgia,serif;font-size:2rem;line-height:1.25;position:relative}.stamp{align-self:flex-end;border:2px dashed rgba(255,255,255,.55);padding:13px;transform:rotate(4deg);font-weight:800;border-radius:10px;position:relative}
+    .planner{position:sticky;top:12px;z-index:10;background:rgba(255,255,255,.86);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.92);box-shadow:0 12px 30px rgba(45,55,60,.1);border-radius:22px;padding:18px;margin:12px auto 34px}
+    .controls{display:grid;grid-template-columns:1.15fr .85fr .95fr 1fr auto;gap:12px;align-items:end}
+    label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--muted);margin:0 0 6px}
+    select,input[type=date]{width:100%;border:1px solid var(--line);background:white;border-radius:13px;padding:12px 13px;color:var(--ink);outline:none}.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;background:var(--teal);color:white}.btn.secondary{background:#f3eee7;color:var(--ink)}
+    .summary{display:grid;grid-template-columns:1.2fr repeat(3,.72fr);gap:15px;margin-bottom:38px}.summary-card{background:var(--card);border:1px solid white;box-shadow:var(--shadow);border-radius:var(--radius);padding:23px}.summary-card.route-card{background:linear-gradient(135deg,#fff,#fff6ea)}
+    .mini-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:800}.big-value{font-size:1.7rem;font-weight:850;margin-top:5px}.sub-value{font-size:.82rem;color:var(--muted);margin-top:4px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip{padding:6px 10px;background:#edf7f5;border-radius:999px;font-size:.78rem;font-weight:750;color:#176869}
+    section{scroll-margin-top:110px;margin:46px 0}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}.section-head h2{font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.035em;margin:0}.section-head p{max-width:560px;color:var(--muted);margin:0}.notice{padding:15px 17px;border-radius:15px;background:#fff6df;border-left:4px solid var(--gold);font-size:.9rem;margin:14px 0}.notice.teal{background:#e9f6f4;border-color:var(--teal)}
+    .flight-grid,.info-grid,.hotel-grid,.food-grid,.check-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:var(--card);border:1px solid white;box-shadow:0 12px 34px rgba(53,61,66,.09);border-radius:20px;padding:22px}.card h3{margin:0 0 8px;font-size:1.08rem}.card p{color:var(--muted);margin:6px 0;font-size:.91rem}.tag{display:inline-block;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:850;padding:5px 8px;border-radius:8px;background:#f8eae6;color:#aa4b40;margin-bottom:10px}.tag.luxury{background:#f1eafb;color:#67509b}.tag.veg{background:#e7f5e7;color:#35753c}.tag.halal{background:#e5f4f6;color:#146e78}.tag.official{background:#fff1d7;color:#9a6815}
+    .action-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.link-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #d9e4e2;border-radius:10px;padding:7px 10px;font-size:.78rem;font-weight:800;background:white}.link-btn:hover{text-decoration:none;background:#eff8f7}
+    .timeline{position:relative;display:grid;gap:16px}.timeline:before{content:"";position:absolute;left:25px;top:16px;bottom:16px;width:2px;background:linear-gradient(var(--coral),var(--teal))}.day{display:grid;grid-template-columns:52px 1fr;gap:15px;position:relative}.day-no{width:52px;height:52px;border-radius:17px;background:linear-gradient(135deg,var(--coral),#ec9a69);color:white;display:grid;place-items:center;font-weight:900;box-shadow:0 7px 20px rgba(239,111,97,.28);z-index:1}.day-card{background:var(--card);border:1px solid white;border-radius:20px;padding:20px;box-shadow:0 9px 28px rgba(44,56,62,.08)}.day-card h3{margin:0 0 3px}.day-meta{font-size:.79rem;color:var(--teal);font-weight:800;margin-bottom:12px}.day-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.slot{padding:12px;border-radius:13px;background:#f8f6f2;font-size:.85rem}.slot b{display:block;margin-bottom:3px;color:var(--ink)}
+    .filters{display:flex;gap:8px;margin-bottom:14px}.filters button{border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px;font-weight:750;cursor:pointer}.filters button.active{background:var(--ink);color:white}
+    .hotel-card .place,.food-card .place{color:var(--coral);font-weight:800;font-size:.77rem;text-transform:uppercase;letter-spacing:.07em}.address{font-size:.82rem!important;min-height:40px}.price{font-weight:850;color:var(--ink)!important}.hotel-grid .card,.food-grid .card{display:flex;flex-direction:column}.hotel-grid .action-row,.food-grid .action-row{margin-top:auto;padding-top:8px}
+    .transport-table{width:100%;border-collapse:collapse;background:white;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.transport-table th,.transport-table td{text-align:left;padding:14px;border-bottom:1px solid #eee7df;font-size:.88rem;vertical-align:top}.transport-table th{background:#eef7f5;color:#176b6c}.transport-table tr:last-child td{border-bottom:0}
+    .check-card h3{margin-top:0}.checklist{display:grid;gap:7px}.check-item{display:flex;gap:10px;align-items:flex-start;background:#faf8f4;padding:9px 10px;border-radius:10px;font-size:.87rem}.check-item input{accent-color:var(--teal);margin-top:3px}.progress-wrap{height:9px;background:#ebe7df;border-radius:99px;overflow:hidden;margin-top:12px}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--coral),var(--gold),var(--teal));transition:.25s}.progress-text{font-size:.78rem;color:var(--muted);margin-top:5px}
+    .accordion{display:grid;gap:10px}.accordion details{background:var(--card);border:1px solid white;border-radius:16px;padding:15px 18px;box-shadow:0 7px 22px rgba(50,60,65,.07)}.accordion summary{cursor:pointer;font-weight:850}.accordion ul{color:var(--muted);font-size:.9rem;padding-left:20px}.accordion li{margin:7px 0}
+    .emergency{background:linear-gradient(135deg,#26343c,#314b51);color:white;border-radius:26px;padding:28px}.emergency h2{font-family:Georgia,serif;margin-top:0}.em-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.em-item{padding:14px;background:rgba(255,255,255,.09);border-radius:14px}.em-item a{color:white;font-weight:900;font-size:1.1rem}.em-item span{display:block;color:#c5d3d4;font-size:.78rem;margin-top:3px}
+    .sources{font-size:.82rem;color:var(--muted)}.sources li{margin:7px 0}.footer{text-align:center;color:var(--muted);padding:20px 0 54px;font-size:.84rem}.hide{display:none!important}
+    @media(max-width:900px){.hero-grid,.summary{grid-template-columns:1fr 1fr}.hero-main{grid-column:1/-1}.controls{grid-template-columns:1fr 1fr}.controls .print{grid-column:1/-1}.hotel-grid,.food-grid{grid-template-columns:1fr 1fr}.em-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:640px){.shell{width:min(94vw,1180px)}.hero{padding-top:20px}.hero-main{padding:30px 24px}.postcard{min-height:240px}.hero-grid,.summary,.flight-grid,.info-grid,.hotel-grid,.food-grid,.check-grid,.controls{grid-template-columns:1fr}.summary-card.route-card{grid-column:auto}.planner{position:relative;top:auto}.day-slots{grid-template-columns:1fr}.timeline:before{left:19px}.day{grid-template-columns:40px 1fr;gap:10px}.day-no{width:40px;height:40px;border-radius:13px}.section-head{display:block}.section-head p{margin-top:6px}.transport-table{display:block;overflow-x:auto}.em-grid{grid-template-columns:1fr 1fr}h1{font-size:3.2rem}}
+    @media print{body{background:white}.planner,.print,.filters,.action-row,.footer{display:none!important}.shell{width:100%}.hero{padding:0}.hero-grid{grid-template-columns:1fr}.postcard{min-height:auto}.summary,.hotel-grid,.food-grid,.check-grid{grid-template-columns:1fr 1fr}.card,.summary-card,.day-card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}section{break-inside:auto}.timeline:before{display:none}.emergency{background:#eee;color:#111}.em-item a{color:#111}.em-item span{color:#555}}
+  </style>
+</head>
+<body>
+  <header class="hero shell">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="eyebrow">A thoughtful journey for Nausheen</div>
+        <h1>Travel, softly.</h1>
+        <p>A complete, selectable itinerary from Hyderabad and back—flights, stays, food, road transfers, sightseeing, checklists, safety notes and realistic medium or luxury budgets.</p>
+        <span class="hero-note">🌿 Slow enough to enjoy • detailed enough to book</span>
+      </div>
+      <div class="postcard">
+        <div class="route-big">Hyderabad<br>to somewhere<br>beautiful</div>
+        <div class="stamp">THAILAND / KERALA</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="planner">
+      <div class="controls">
+        <div><label for="destination">Destination</label><select id="destination"><option value="thailand">Thailand</option><option value="kerala">Kerala</option></select></div>
+        <div><label for="duration">Trip length</label><select id="duration"><option value="5">5 days</option><option value="7" selected>7 days</option><option value="10">10 days</option></select></div>
+        <div><label for="budget">Travel style</label><select id="budget"><option value="medium">Medium budget</option><option value="luxury">Luxury</option></select></div>
+        <div><label for="startDate">Tentative departure</label><input type="date" id="startDate" /></div>
+        <button class="btn print" onclick="window.print()">Print / Save PDF</button>
+      </div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <section id="flights">
+      <div class="section-head"><div><div class="eyebrow">Start and finish in Hyderabad</div><h2>Flight plan</h2></div><p>Use this routing template to compare one booking versus separate tickets. Timings and fares must be checked for the selected dates.</p></div>
+      <div id="seasonNotice" class="notice"></div>
+      <div class="flight-grid" id="flightGrid"></div>
+    </section>
+
+    <section id="itinerary">
+      <div class="section-head"><div><div class="eyebrow">Day by day</div><h2>Your selected itinerary</h2></div><p id="paceNote"></p></div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <section id="hotels">
+      <div class="section-head"><div><div class="eyebrow">Curated stays</div><h2>Hotels to shortlist</h2></div><p>Prices shown are typical planning bands per room/night, not live quotes. Book refundable rates from the official hotel or a trusted platform.</p></div>
+      <div class="filters"><button class="hotel-filter active" data-filter="selected">Selected style</button><button class="hotel-filter" data-filter="all">Show both</button></div>
+      <div class="hotel-grid" id="hotelGrid"></div>
+    </section>
+
+    <section id="food">
+      <div class="section-head"><div><div class="eyebrow">Good meals, easy decisions</div><h2>Food guide</h2></div><p>Addresses open directly in Maps. Dietary claims and opening hours can change—call or message the restaurant on the day, especially for halal, allergy, Jain or no-onion/no-garlic needs.</p></div>
+      <div class="food-grid" id="foodGrid"></div>
+    </section>
+
+    <section id="transport">
+      <div class="section-head"><div><div class="eyebrow">Door to door</div><h2>Taxi & local transport</h2></div><p>Prepaid airport counters and app fares are safer than accepting unsolicited rides. Confirm the plate and driver before entering.</p></div>
+      <div id="transportTable"></div>
+    </section>
+
+    <section id="checklists">
+      <div class="section-head"><div><div class="eyebrow">Tap as you complete</div><h2>Visit & packing checklists</h2></div><p>Your ticks are saved on this device. The attraction list automatically changes with the selected destination and trip length.</p></div>
+      <div class="check-grid" id="checkGrid"></div>
+    </section>
+
+    <section id="rules">
+      <div class="section-head"><div><div class="eyebrow">Before you leave</div><h2>Documents, rules & safety</h2></div><p>Entry rules can change at short notice. Use the linked government sources again immediately before booking and before departure.</p></div>
+      <div class="accordion" id="rulesAccordion"></div>
+    </section>
+
+    <section class="emergency" id="emergency">
+      <h2>Keep these numbers offline</h2>
+      <div class="em-grid" id="emergencyGrid"></div>
+    </section>
+
+    <section id="sources">
+      <div class="section-head"><div><div class="eyebrow">Verified planning links</div><h2>Official sources</h2></div><p>Last reviewed 5 October 2026. Hotel and attraction availability still depends on exact travel dates and weather.</p></div>
+      <ul class="sources" id="sourceList"></ul>
+    </section>
+  </main>
+  <footer class="footer shell">Made for Nausheen with care • Estimates are planning guidance, not confirmed quotations.</footer>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const maps = q => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+    const state = {destination:'thailand',days:7,budget:'medium',hotelFilter:'selected'};
+
+    const itineraries = {
+      thailand:{
+        5:{route:['Hyderabad','Bangkok','Krabi','Hyderabad'],airports:'HYD → BKK • DMK/BKK → KBV • KBV → HYD',pace:'A highlights-first city-and-beach escape with one domestic flight.',days:[
+          ['Fly Hyderabad → Bangkok','Flight + Airport Rail Link / taxi','Depart HYD early if possible; land at BKK; complete immigration and collect SIM/eSIM.','Check in near Silom/Sukhumvit; rest and café stop.','Chao Phraya sunset ferry, ICONSIAM and riverside dinner.'],
+          ['Old Bangkok & night market','BTS + MRT + river boat','Grand Palace and Wat Phra Kaew at opening; walk to Wat Pho.','Cross-ferry to Wat Arun; lunch; Jim Thompson House or Thai massage.','Chinatown food walk or Asiatique.'],
+          ['Bangkok → Krabi','Domestic flight + hotel transfer','Fly BKK/DMK to KBV; prebook airport transfer to Ao Nang.','Check in, Ao Nang beach walk and relaxed lunch.','Krabi sunset, night market and early sleep.'],
+          ['Four Islands day','Shared speedboat/long-tail boat','Island tour: Poda, Chicken Island, Tup sandbar and Phra Nang (weather-led).','Snorkelling and beach time; carry dry bag and reef-safe sunscreen.','Return to hotel; spa or quiet dinner.'],
+          ['Krabi → Hyderabad','Taxi + flight','Breakfast and last beach walk; leave 3 hours before international check-in.','Fly KBV → HYD, usually via Bangkok/Kuala Lumpur depending ticket.','Arrive Hyderabad; keep connection buffer of 3+ hours on separate tickets.']
+        ]},
+        7:{route:['Hyderabad','Bangkok','Chiang Mai','Krabi','Hyderabad'],airports:'HYD → BKK • BKK/DMK → CNX → KBV • KBV → HYD',pace:'Balanced culture, mountains and beach—with two short Thai domestic flights.',days:[
+          ['Fly Hyderabad → Bangkok','Flight + Airport Rail Link / taxi','Depart HYD; arrive BKK; immigration, ATM/SIM and hotel transfer.','Check in and rest near Silom or Sukhumvit.','Chao Phraya sunset, ICONSIAM and riverside dinner.'],
+          ['Grand Bangkok classics','River boat + MRT/BTS','Grand Palace and Wat Phra Kaew at opening; Wat Pho.','Wat Arun, Tha Tien lunch, optional Jim Thompson House.','Chinatown or Asiatique; pack for morning flight.'],
+          ['Bangkok → Chiang Mai','Domestic flight + Grab','Fly to CNX; check in near Nimman/Old City.','Old City temples: Wat Chedi Luang and Wat Phra Singh.','Night Bazaar or Sunday Walking Street if dates align.'],
+          ['Doi Suthep & local life','Private car / joined tour','Early Wat Phra That Doi Suthep before crowds.','Choose ethical elephant sanctuary OR Doi Inthanon—do not squeeze both in.','Nimman cafés and northern Thai dinner.'],
+          ['Chiang Mai → Krabi','Flight + airport transfer','Fly CNX → KBV (direct if operating; otherwise connect in Bangkok).','Check in at Ao Nang; pool and beach time.','Ao Nang sunset and relaxed dinner.'],
+          ['Krabi island day','Licensed boat tour','Four Islands or Hong Islands tour, selected by sea conditions.','Snorkelling, beach picnic and viewpoint stops.','Return before sunset; spa and dinner.'],
+          ['Krabi → Hyderabad','Taxi + flight','Breakfast, checkout and transfer to KBV.','Fly to HYD; protect a 3+ hour self-transfer connection.','Arrive Hyderabad and save receipts for insurance claims if delayed.']
+        ]},
+        10:{route:['Hyderabad','Bangkok','Chiang Mai','Krabi','Phuket','Hyderabad'],airports:'HYD → BKK • BKK/DMK → CNX → KBV • HKT → HYD',pace:'The fuller route: heritage, northern culture and an unhurried Andaman coast finish.',days:[
+          ['Fly Hyderabad → Bangkok','Flight + Airport Rail Link / taxi','Arrive BKK, immigration and hotel transfer.','Rest, currency/SIM setup and riverside walk.','ICONSIAM and relaxed dinner.'],
+          ['Bangkok royal quarter','Boat + walking','Grand Palace, Wat Phra Kaew and Wat Pho at opening.','Wat Arun, Museum Siam or canal tour.','Chinatown food walk.'],
+          ['Modern Bangkok','BTS + MRT','Jim Thompson House; Siam art/shopping district.','Lumphini/Benjakitti park and massage.','Rooftop or Asiatique; early night.'],
+          ['Bangkok → Chiang Mai','Domestic flight + Grab','Morning flight to CNX; settle near Old City/Nimman.','Wat Chedi Luang, Wat Phra Singh and cafés.','Night Bazaar / walking street.'],
+          ['Chiang Mai nature day','Private car / licensed tour','Doi Inthanon waterfalls and summit OR ethical elephant sanctuary.','Continue the selected experience without rushing.','Northern Thai dinner and rest.'],
+          ['Doi Suthep → Krabi','Car + flight','Sunrise/early Wat Phra That Doi Suthep.','Fly CNX → KBV; hotel transfer to Ao Nang.','Beach sunset.'],
+          ['Krabi islands','Licensed boat','Hong Islands or Four Islands, chosen by weather and crowd levels.','Snorkel, swim and beach picnic.','Return and spa.'],
+          ['Railay → Phuket','Long-tail + private car/ferry','Morning Railay and Phra Nang Cave Beach.','Transfer Krabi to Phuket (road is reliable; ferry only in good weather).','Kata/Kamala sunset and check-in.'],
+          ['Phuket day','Private car / app taxi','Old Phuket Town, colourful Sino-Portuguese streets and cafés.','Wat Chalong and a viewpoint; optional beach time.','Sunset dinner; avoid overbooking the final night.'],
+          ['Phuket → Hyderabad','Taxi + flight','Leisurely breakfast; leave for HKT 3 hours before departure.','Fly HKT → HYD (direct if scheduled, otherwise one stop).','Arrive Hyderabad.']
+        ]}
+      },
+      kerala:{
+        5:{route:['Hyderabad','Kochi','Munnar','Alappuzha','Kochi','Hyderabad'],airports:'HYD → COK → HYD',pace:'A compact hill-and-backwater loop with two scenic road transfers.',days:[
+          ['Fly Hyderabad → Kochi','Flight + prepaid taxi','Morning HYD → COK; collect baggage and prepaid cab.','Fort Kochi: Chinese fishing nets, St Francis Church and heritage lanes.','Kathakali performance; stay Fort Kochi/Ernakulam.'],
+          ['Kochi → Munnar','Private cab • 125 km • 4–5 hr','Drive via Cheeyappara/Valara waterfalls; safe photo stops.','Tea garden viewpoints and hotel check-in.','Munnar market, early dinner and warm layer.'],
+          ['Munnar full day','Private cab / local sightseeing car','Eravikulam National Park if open; book timed entry.','Tea Museum, Mattupetty Dam and Echo Point (traffic permitting).','Sunset viewpoint and relaxed stay.'],
+          ['Munnar → Alappuzha','Private cab • 170 km • 5–6 hr','Leave after breakfast; arrive backwaters by early afternoon.','Houseboat day cruise/overnight only with registered operator; inspect safety basics.','Kerala dinner and quiet backwater evening.'],
+          ['Alappuzha → COK → Hyderabad','Private cab • 85 km • 2–2.5 hr + flight','Disembark after breakfast; drive to COK with buffer.','Fly COK → HYD; choose late-afternoon/evening departure.','Arrive Hyderabad.']
+        ]},
+        7:{route:['Hyderabad','Kochi','Munnar','Thekkady','Alappuzha','Varkala','Thiruvananthapuram','Hyderabad'],airports:'HYD → COK • TRV → HYD',pace:'A one-way Kerala route—hills, wildlife, backwaters and cliff beach without backtracking.',days:[
+          ['Fly Hyderabad → Kochi','Flight + prepaid taxi','Morning flight to COK and hotel drop.','Fort Kochi heritage walk and Mattancherry/Jew Town.','Kathakali show and seafood/vegetarian dinner.'],
+          ['Kochi → Munnar','Private cab • 125 km • 4–5 hr','Waterfall and spice-garden stops en route.','Check in; tea garden viewpoints.','Munnar market and rest.'],
+          ['Munnar highlights','Local cab','Eravikulam National Park if open; timed ticket.','Tea Museum, Mattupetty and Echo Point.','Sunset viewpoint.'],
+          ['Munnar → Thekkady','Private cab • 90 km • 3–4 hr','Scenic drive and spice plantation tour.','Periyar boat safari—official ticket only; reach early.','Kalaripayattu or Kathakali show.'],
+          ['Thekkady → Alappuzha','Private cab • 140 km • 4–5 hr','Drive to backwaters.','Day cruise or registered overnight houseboat; confirm route and meals.','Backwater sunset.'],
+          ['Alappuzha → Varkala','Train or cab • 120 km • 3–4 hr','Morning transfer to Varkala.','Cliff walk, Papanasam Beach and café time.','Sunset; stay away from unguarded cliff edges.'],
+          ['Varkala → TRV → Hyderabad','Cab • 45 km • 1.5 hr + flight','Slow breakfast; optional Janardanaswamy Temple with respectful dress.','Transfer to TRV; fly to HYD.','Arrive Hyderabad.']
+        ]},
+        10:{route:['Hyderabad','Athirappilly','Kochi','Munnar','Thekkady','Alappuzha','Varkala','Kovalam','Thiruvananthapuram','Hyderabad'],airports:'HYD → COK • TRV → HYD',pace:'The complete south Kerala journey with waterfall, heritage, hills, wildlife, backwaters and beaches.',days:[
+          ['Fly HYD → COK • Athirappilly','Flight + private cab','Morning flight; drive COK to Athirappilly (about 1.5 hr).','Waterfall viewpoints subject to access and weather; wear grippy shoes.','Return toward Fort Kochi; check in and rest.'],
+          ['Fort Kochi & Mattancherry','Walking + auto/cab','Chinese fishing nets, St Francis Church and heritage lanes.','Mattancherry Palace, Jew Town and cafés.','Kathakali performance.'],
+          ['Kochi → Munnar','Private cab • 4–5 hr','Waterfalls and spice/tea stops en route.','Hotel check-in and tea garden viewpoints.','Munnar market.'],
+          ['Munnar nature day','Local cab','Eravikulam National Park if open; reserve timed entry.','Tea Museum and scenic circuit: Mattupetty/Echo Point.','Leisurely sunset.'],
+          ['Munnar → Thekkady','Private cab • 3–4 hr','Scenic drive; spice plantation tour.','Periyar boat safari or nature walk with official booking.','Kalaripayattu/Kathakali show.'],
+          ['Thekkady → Alappuzha','Private cab • 4–5 hr','Leave after breakfast.','Board registered houseboat/day cruise; review life jackets and kitchen hygiene.','Backwater sunset and onboard stay or lakeside resort.'],
+          ['Alappuzha → Varkala','Train or cab • 3–4 hr','Disembark; transfer south.','Varkala cliff, Papanasam beach and cafés.','Sunset and relaxed dinner.'],
+          ['Varkala slow day','Walking + auto','Beach morning when lifeguards permit swimming.','Spa/yoga or Kappil Beach and backwaters by cab.','Cliff cafés; second Varkala night.'],
+          ['Varkala → Kovalam','Private cab • 1.5–2 hr','Drive to Kovalam; check in.','Lighthouse Beach and resort time.','Sunset dinner; pack for flight.'],
+          ['Kovalam → TRV → Hyderabad','Cab • 30–45 min + flight','Breakfast; optional Padmanabhaswamy Temple exterior/city stop if timing permits.','Transfer to TRV and fly to HYD.','Arrive Hyderabad.']
+        ]}
+      }
+    };
+
+    const budgets={
+      thailand:{5:{medium:['₹65k–95k','₹1.30L–1.90L','Flights 25–40k • Hotels 12–22k • Local travel/tours 15–22k • Food 8–12k'],luxury:['₹1.30L–2.30L','₹2.60L–4.60L','Flights 45–85k • Hotels 45–90k • Private transfers/tours 25–40k • Food 15–25k']},7:{medium:['₹90k–1.30L','₹1.80L–2.60L','Flights 32–48k • Hotels 20–34k • Local travel/tours 22–30k • Food 12–17k'],luxury:['₹1.90L–3.20L','₹3.80L–6.40L','Flights 55–95k • Hotels 75k–1.35L • Private transfers/tours 35–55k • Food 22–35k']},10:{medium:['₹1.25L–1.80L','₹2.50L–3.60L','Flights 38–58k • Hotels 32–52k • Transport/tours 35–48k • Food 18–25k'],luxury:['₹2.70L–4.50L','₹5.40L–9.00L','Flights 65k–1.15L • Hotels 1.15L–2.10L • Private tours/transfers 55–85k • Food 30–50k']}},
+      kerala:{5:{medium:['₹40k–60k','₹80k–1.20L','Flights 9–18k • Hotels 10–18k • Cab/houseboat 14–20k • Food/entry 7–10k'],luxury:['₹80k–1.40L','₹1.60L–2.80L','Flights 15–28k • Hotels 35–65k • Premium cab/houseboat 22–35k • Food/entry 10–18k']},7:{medium:['₹55k–85k','₹1.10L–1.70L','Flights 10–20k • Hotels 16–28k • Cab/houseboat 20–28k • Food/entry 9–14k'],luxury:['₹1.20L–2.00L','₹2.40L–4.00L','Flights 16–30k • Hotels 55k–95k • Premium cab/houseboat 30–45k • Food/entry 14–25k']},10:{medium:['₹75k–1.15L','₹1.50L–2.30L','Flights 11–22k • Hotels 25–42k • Cab/houseboat 28–38k • Food/entry 12–18k'],luxury:['₹1.70L–2.80L','₹3.40L–5.60L','Flights 18–32k • Hotels 85k–1.45L • Premium cab/houseboat 42–65k • Food/entry 20–35k']}}
+    };
+
+    const hotels={
+      thailand:[
+        {city:'Bangkok',style:'medium',name:'Centre Point Plus Hotel Silom',price:'Usually ₹5,500–10,000',address:'1522/2 Soi Kaysorn 1, Charoenkrung Rd, Bang Rak, Bangkok 10500',phone:'+66 2 630 6345',url:'https://www.centrepoint.com/silom/contact'},
+        {city:'Bangkok',style:'luxury',name:'Mandarin Oriental, Bangkok',price:'Usually ₹40,000–85,000+',address:'48 Oriental Avenue, Bang Rak, Bangkok 10500',phone:'+66 2 659 9000',url:'https://www.mandarinoriental.com/en/bangkok/chao-phraya-river'},
+        {city:'Chiang Mai',style:'medium',name:'U Nimman Chiang Mai',price:'Usually ₹6,000–12,000',address:'1 Nimmanhaemin Rd, Suthep, Mueang Chiang Mai 50200',phone:'+66 52 005 111',url:'https://www.uhotelsresorts.com/unimmanchiangmai'},
+        {city:'Chiang Mai',style:'luxury',name:'137 Pillars House',price:'Usually ₹28,000–55,000',address:'2 Soi 1, Nawatgate Rd, Wat Ket, Mueang Chiang Mai 50000',phone:'+66 53 247 788',url:'https://137pillarshotels.com/chiangmai/'},
+        {city:'Krabi',style:'medium',name:'Sea Seeker Krabi Resort',price:'Usually ₹3,500–8,000',address:'963 Moo 2, Ao Nang, Mueang Krabi 81180',phone:'+66 75 817 777',url:'https://www.seaseekerkrabiresort.com/'},
+        {city:'Krabi',style:'luxury',name:'Rayavadee',price:'Usually ₹45,000–90,000+',address:'214 Moo 2, Ao Nang, Mueang Krabi 81000',phone:'+66 75 817 630',url:'https://www.rayavadee.com/'},
+        {city:'Phuket',style:'medium',name:'Holiday Inn Resort Phuket',price:'Usually ₹8,000–16,000',address:'52 Thaweewong Rd, Patong Beach, Kathu, Phuket 83150',phone:'+66 76 370 200',url:'https://holidayinnresortphuket.com/'},
+        {city:'Phuket',style:'luxury',name:'The Shore at Katathani (Adults only)',price:'Usually ₹35,000–75,000+',address:'14 Kata Noi Rd, Karon, Mueang Phuket 83100',phone:'+66 76 330 124',url:'https://www.theshorephuket.com/'}
+      ],
+      kerala:[
+        {city:'Kochi',style:'medium',name:'Fragrant Nature Kochi',price:'Usually ₹6,000–12,000',address:'Near SBI Calvathy, Calvathy Bazar Rd, Fort Kochi, Kerala 682001',phone:'+91 484 221 3600',url:'https://www.fragrantnature.com/fort-kochi/'},
+        {city:'Kochi',style:'luxury',name:'Grand Hyatt Kochi Bolgatty',price:'Usually ₹14,000–32,000',address:'Bolgatty Island, Kochi, Kerala 682504',phone:'+91 484 266 1234',url:'https://www.hyatt.com/grand-hyatt/en-US/cokgh-grand-hyatt-kochi-bolgatty'},
+        {city:'Munnar',style:'medium',name:'KTDC Tea County',price:'Usually ₹5,000–10,000',address:'Ikka Nagar, Munnar, Kerala 685612',phone:'+91 471 272 1243',url:'https://www.ktdc.com/tea-county/'},
+        {city:'Munnar',style:'luxury',name:'Windermere Estate',price:'Usually ₹18,000–32,000',address:'Pothamedu, Munnar, Kerala 685612',phone:'+91 4865 230 512',url:'https://www.windermeremunnar.com/'},
+        {city:'Thekkady',style:'medium',name:'KTDC Aranya Nivas',price:'Usually ₹5,500–11,000',address:'Inside Periyar Tiger Reserve, Thekkady, Kerala 685536',phone:'+91 4869 222 023',url:'https://www.ktdc.com/aranya-nivas/'},
+        {city:'Thekkady',style:'luxury',name:'Spice Village – CGH Earth',price:'Usually ₹18,000–34,000',address:'Thekkady–Kumily Rd, Thekkady, Kerala 685536',phone:'+91 4869 222 314',url:'https://www.cghearth.com/spice-village'},
+        {city:'Varkala',style:'medium',name:'Mad About Coco',price:'Usually ₹3,500–7,500',address:'North Cliff, Kurakkanni, Varkala, Kerala 695141',phone:'+91 81380 77370',url:'https://madaboutcoco.com/'},
+        {city:'Varkala',style:'luxury',name:'Gateway Varkala',price:'Usually ₹11,000–22,000',address:'Janardhanapuram, Varkala, Kerala 695141',phone:'+91 470 277 3300',url:'https://www.gateway-hotels.com/en-in/hotels/gateway-varkala'},
+        {city:'Kovalam',style:'medium',name:'Uday Samudra Leisure Beach Hotel',price:'Usually ₹6,000–12,000',address:'GV Raja Rd, Samudra Beach, Kovalam, Kerala 695527',phone:'+91 93872 17501',url:'https://www.udshotels.com/uday-samudra-leisure-beach-hotel-spa/'},
+        {city:'Kovalam',style:'luxury',name:'The Leela Kovalam, A Raviz Hotel',price:'Usually ₹20,000–45,000',address:'Kovalam, Thiruvananthapuram, Kerala 695527',phone:'+91 471 669 1111',url:'https://www.theleela.com/the-leela-kovalam-a-raviz-hotel'}
+      ]
+    };
+
+    const food={
+      thailand:[
+        ['Bangkok','Thipsamai Pad Thai','Thai classic','313–315 Maha Chai Rd, Samran Rat, Bangkok 10200','Known for pad thai; expect a queue.'],
+        ['Bangkok','Usman Thai Muslim Food','Halal','Sukhumvit Soi 22, Khlong Toei, Bangkok 10110','Thai-Muslim dishes; reconfirm certification and timings.'],
+        ['Bangkok','Broccoli Revolution','Vegetarian / vegan','899 Sukhumvit Rd, Khlong Tan Nuea, Bangkok 10110','Plant-based café; useful for a lighter meal.'],
+        ['Chiang Mai','Khao Soi Mae Sai','Northern Thai','Ratchaphuek Rd, Chang Phueak, Chiang Mai 50300','Popular khao soi; daytime stop.'],
+        ['Chiang Mai','Reform Kafé','Vegan','1/4 Soi 1, Moon Muang Rd, Chiang Mai 50200','Vegan Thai and international food.'],
+        ['Krabi','Kodam Kitchen','Thai / seafood','155/17 Moo 3, Ao Nang, Krabi 81180','Reserve or arrive early in peak season.'],
+        ['Krabi','Govinda’s Restaurant','Vegetarian / vegan','Ao Nang, Mueang Krabi 81180','Indian and plant-based choices; ask about onion/garlic.'],
+        ['Phuket','One Chun Café & Restaurant','Southern Thai','48/1 Thepkrasattri Rd, Phuket Old Town 83000','Local Phuket recipes in a heritage setting.'],
+        ['Phuket','Raya Restaurant','Southern Thai','48 Dibuk Rd, Talat Yai, Phuket 83000','Well-known old-town house restaurant.']
+      ],
+      kerala:[
+        ['Kochi','Kashi Art Café','Café','Burgher St, Fort Kochi, Kerala 682001','Breakfast, coffee and art-space atmosphere.'],
+        ['Kochi','Paragon Restaurant','Kerala / Malabar','Lulu Mall, Edappally, Kochi, Kerala 682024','Malabar favourites; busy at meal times.'],
+        ['Kochi','Brindhavan Vegetarian Restaurant','Vegetarian','NH Bypass, Palarivattom, Kochi, Kerala 682025','Reliable vegetarian South Indian meals.'],
+        ['Munnar','Saravana Bhavan','Vegetarian','MG Rd, Munnar, Kerala 685612','Simple South Indian vegetarian food.'],
+        ['Munnar','Rapsy Restaurant','Kerala / multi-cuisine','Main Bazaar, Munnar, Kerala 685612','Casual, central and popular; modest setting.'],
+        ['Thekkady','Grandma’s Café','Café / Kerala','Lake Rd, Thekkady, Kumily, Kerala 685509','Cosy café; ask for spice level.'],
+        ['Alappuzha','Halais Restaurant','Kerala / biryani','CCSB Rd, Civil Station Ward, Alappuzha 688012','Popular biryani and Kerala dishes.'],
+        ['Varkala','Darjeeling Café','Café / seafood','North Cliff, Varkala, Kerala 695141','Sea-view cliff café; verify current hours.'],
+        ['Kovalam','Swastha','Vegetarian','Uday Samudra, GV Raja Rd, Kovalam 695527','Vegetarian restaurant inside UDS.']
+      ]
+    };
+
+    const transport={
+      thailand:[
+        ['Airport arrival','Use the official metered-taxi queue at BKK/DMK/HKT/KBV, or prebook hotel transfer. At BKK, keep the printed queue slip.','Airport surcharge/tolls may be extra. Ignore unsolicited drivers inside arrivals.'],
+        ['City rides','Grab or Bolt app; enter the exact pickup pin and match plate/driver. Bangkok BTS/MRT is often faster at rush hour.','Pay in-app or cash as shown; tolls can be separate.'],
+        ['Bangkok airport rail','Airport Rail Link connects BKK with central Bangkok; change at Makkasan/Phaya Thai.','Best with light luggage; check operating hours on travel day.'],
+        ['Intercity','Fly Bangkok–Chiang Mai/Krabi/Phuket. For Krabi–Phuket, use a hotel-arranged/private road transfer in rough weather.','Keep 3+ hours if self-connecting on separate tickets.'],
+        ['Islands','Book licensed operators with life jackets, insurance details and weather cancellation policy.','Never pressure a captain to sail during warnings.']
+      ],
+      kerala:[
+        ['Cochin Airport','Round-the-clock official prepaid taxi counters at COK; collect receipt before going to the vehicle.','CIAL prepaid taxi is the safest default for Munnar/Kochi.'],
+        ['Thiruvananthapuram Airport','Prepaid taxi counters operate at domestic and international terminals; Uber may also show pickups.','Airport T1: 0471-2702311 • T2: 0471-2702711/10.'],
+        ['Full route cab','For 5–10 days, book one AC sedan/SUV with driver through a Kerala Tourism-accredited operator or hotel.','Written quote should include km limit, driver allowance, tolls, parking and interstate/night charges.'],
+        ['Apps','Uber is useful in Kochi and Thiruvananthapuram; availability becomes patchy in Munnar/Thekkady/Varkala.','Do not depend on app cabs for time-critical hill transfers.'],
+        ['Train option','Alappuzha–Varkala is comfortable by reserved train if schedule fits; book via IRCTC only.','Allow station transfers and avoid unreserved coaches with luggage.'],
+        ['Houseboat','Use a registered operator; ask for registration, route, AC hours, meal plan, life jackets and cancellation terms in writing.','Do not send full payment to an unverified personal account.']
+      ]
+    };
+
+    const attractions={
+      thailand:{5:['Grand Palace & Wat Phra Kaew','Wat Pho','Wat Arun','Chao Phraya ferry','Chinatown / Asiatique','Ao Nang Beach','Four Islands / Hong Islands','Phra Nang Beach'],7:['Grand Palace & Wat Phra Kaew','Wat Pho','Wat Arun','Chao Phraya ferry','Chiang Mai Old City temples','Doi Suthep','Doi Inthanon or ethical sanctuary','Ao Nang Beach','Four Islands / Hong Islands','Night market'],10:['Grand Palace & Wat Phra Kaew','Wat Pho','Wat Arun','Jim Thompson House','Chinatown','Chiang Mai Old City','Doi Suthep','Doi Inthanon or ethical sanctuary','Ao Nang Beach','Hong/Four Islands','Railay & Phra Nang','Old Phuket Town','Wat Chalong','Phuket viewpoint']},
+      kerala:{5:['Fort Kochi heritage walk','Kathakali performance','Munnar tea gardens','Eravikulam National Park','Tea Museum','Mattupetty & Echo Point','Alappuzha backwaters'],7:['Fort Kochi & Mattancherry','Kathakali performance','Munnar tea gardens','Eravikulam National Park','Tea Museum','Periyar official boat safari','Spice plantation','Alappuzha backwaters','Varkala Cliff & beach'],10:['Athirappilly Falls','Fort Kochi & Mattancherry','Kathakali performance','Munnar tea gardens','Eravikulam National Park','Tea Museum','Periyar safari/nature walk','Spice plantation','Alappuzha backwaters','Varkala Cliff','Kappil Beach/backwaters','Kovalam Lighthouse Beach']}
+    };
+
+    const packingCommon=['Government photo ID + digital backup','Flight/hotel/transfer confirmations','Travel insurance policy and emergency contact','Prescription medicines in original packs','Small first-aid kit and ORS','Phone, charger, power bank and cables','Comfortable walking shoes + sandals','Sunglasses, hat and sunscreen','Reusable water bottle','Light day bag and foldable tote','Modest outfit for religious sites','Copies of key documents stored securely'];
+    const packing={
+      thailand:['Passport with adequate validity and 2 blank pages','TDAC QR/PDF and first-hotel address','Visa proof if required after official eligibility check','Universal adapter (Thailand sockets vary)','THB cash plus international card','eSIM/roaming set up before landing','Reef-safe sunscreen and dry bag','Light rain jacket/umbrella','Swimwear + cover-up','Mosquito repellent','Doctor letter for controlled medicines'],
+      kerala:['Any accepted domestic-flight photo ID','UPI plus backup card/cash','Light jacket for Munnar mornings','Compact umbrella/rain shell','Mosquito repellent','Quick-dry clothing in monsoon','Motion-sickness medicine for hill roads/boats','Modest temple-ready clothing','Grippy shoes for waterfall/monsoon paths']
+    };
+    const notNeeded={
+      thailand:['Large bundles of cash','Heavy winter coat','Unlabelled medication','Indian-only plug strip without universal adapter','Drone unless registrations/permissions are arranged','E-cigarette/vape—do not carry'],
+      kerala:['Passport for an Indian domestic trip (carry accepted photo ID instead)','Visa, forex or international SIM','Heavy winter clothes—one light layer is enough for Munnar','Too many shoes or hard-shell luggage for houseboats','Disposable plastic items where local restrictions apply']
+    };
+
+    const rules={
+      thailand:[
+        ['Passport, visa check & TDAC','For an Indian ordinary passport, confirm the visa/visa-exemption rule for the exact travel date on Thailand’s official e-Visa/MFA pages before paying. Keep passport validity comfortably beyond the trip (many airlines expect 6 months), onward/return ticket, accommodation and funds evidence. Every non-Thai traveller must submit the free Thailand Digital Arrival Card (TDAC) within 3 days before arrival; it is not a visa. Use only tdac.immigration.go.th.'],
+        ['Customs & prohibited items','Do not carry e-cigarettes/vapes. Avoid narcotics and cannabis products; laws and enforcement are strict and can change. Declare restricted/high-value goods when required. Carry prescription medicines in original packaging with a prescription; verify controlled-drug rules before travel.'],
+        ['Culture & clothing','Cover shoulders and knees at major temples; remove shoes where instructed. Never touch religious objects for photos, climb monuments or make disrespectful comments about the monarchy. Ask before photographing people or monks.'],
+        ['Road, sea & wildlife safety','Wear helmets; avoid renting scooters without the correct licence/insurance. Use operators that provide life jackets; tours can be cancelled for weather. Choose genuinely ethical elephant experiences: no riding, shows, chains-for-photos or forced bathing.'],
+        ['Money, connectivity & scams','Notify your bank, enable international use and carry more than one payment method. Decline dynamic currency conversion when your card permits. Use bank/airport ATMs, official taxi queues and app rides; verify hotel payment links independently.']
+      ],
+      kerala:[
+        ['Documents & flights','Indian citizens need an airline-accepted government photo ID for domestic flights; names must match the ticket. Non-Indian travellers should also carry passport/visa documents. Keep hotel and return confirmations offline.'],
+        ['Protected areas & timed entry','Book Eravikulam National Park and Periyar Tiger Reserve activities only through official portals/counters. Opening, boating and trekking can change because of breeding seasons, wildlife movement, rain or safety closures. Do not feed or approach wildlife.'],
+        ['Temples, beaches & local rules','Dress modestly at temples; some temples restrict entry to Hindus and may enforce clothing rules. Follow lifeguard flags at beaches and do not swim after dark or during rough-sea warnings. Alcohol is state-regulated—buy/consume only where lawful.'],
+        ['Road & monsoon safety','Hill-road times are estimates, not distances alone. Avoid night driving in heavy rain/fog, wear seat belts, and never insist on waterfall access during alerts. Check IMD/district advisories during monsoon.'],
+        ['Responsible travel','Avoid single-use plastic, keep noise low around villages/backwaters, use registered boats, never litter, and request permission before using drones—aviation, wildlife and local restrictions may all apply.']
+      ]
+    };
+
+    const emergency={
+      thailand:[['1155','Tourist Police • multilingual, 24/7'],['191','Police emergency'],['1669','Medical emergency / ambulance'],['199','Fire'],['+66 2 203 5000','Thailand Ministry of Foreign Affairs'],['+66 2 258 0300','Embassy of India, Bangkok (main)']],
+      kerala:[['112','All-India emergency'],['108','Ambulance service'],['100','Police'],['101','Fire'],['1-800-425-4747','Kerala Tourism toll-free'],['1363','India tourist helpline'],['0471-2702311','TRV Airport Terminal 1'],['0471-2702711','TRV Airport Terminal 2']]
+    };
+
+    const sources={
+      thailand:[
+        ['Thailand Digital Arrival Card (official, free)','https://tdac.immigration.go.th/'],
+        ['Thailand e-Visa / eligibility (official)','https://www.thaievisa.go.th/'],
+        ['Tourism Authority of Thailand trip planner','https://www.tourismthailand.org/Trip-Planner'],
+        ['Thailand government emergency numbers','https://thailand.go.th/issue-focus-detail/003_003?hl=en'],
+        ['Embassy of India in Bangkok','https://embassyofindiabangkok.gov.in/']
+      ],
+      kerala:[
+        ['Kerala Tourism destinations (official)','https://www.keralatourism.org/destination/'],
+        ['Kerala Tourism contact and toll-free line','https://www.keralatourism.org/contactus/'],
+        ['Cochin Airport prepaid taxis','https://www.cial.aero/Transportation/Prepaid-Taxi'],
+        ['Thiruvananthapuram Airport transport','https://thiruvananthapuram.adaniairports.com/en/to-and-from-airport'],
+        ['KTDC official hotels and booking','https://www.ktdc.com/'],
+        ['Indian Railways booking (IRCTC)','https://www.irctc.co.in/']
+      ]
+    };
+
+    function monthAdvice(){
+      const d=$('#startDate').value?new Date($('#startDate').value+'T00:00:00'):null;
+      if(!d) return state.destination==='thailand'?'Choose dates to see seasonal advice. Thailand is generally coolest/driest Nov–Feb; Mar–Apr is hot; Andaman weather is less predictable May–Oct.':'Choose dates to see seasonal advice. Kerala is generally most comfortable Oct–Feb; Mar–May is hot; Jun–Sep is monsoon with lush scenery and possible disruptions.';
+      const m=d.getMonth()+1;
+      if(state.destination==='thailand') return [11,12,1,2].includes(m)?'Good seasonal window: usually cooler and drier, but book early and expect peak pricing.':[3,4].includes(m)?'Hot-season plan: schedule outdoor temples early, hydrate often and keep midday breaks.':'Rain-season plan: keep island days flexible, choose refundable boats/flights and follow marine warnings.';
+      return [10,11,12,1,2].includes(m)?'Good seasonal window: usually drier and comfortable; Munnar evenings can feel cool.':[3,4,5].includes(m)?'Hot-season plan: start sightseeing early, carry water and choose AC road transfers.':'Monsoon plan: Kerala is vivid and green, but waterfalls, hill roads, boats and beach swimming may be restricted—keep a buffer day.';
+    }
+
+    function renderSummary(){
+      const plan=itineraries[state.destination][state.days], b=budgets[state.destination][state.days][state.budget];
+      $('#summary').innerHTML=`
+        <div class="summary-card route-card"><div class="mini-label">Selected route</div><div class="big-value">${state.destination==='thailand'?'Thailand':'Kerala'} • ${state.days} days</div><div class="chips">${plan.route.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+        <div class="summary-card"><div class="mini-label">Per person*</div><div class="big-value">${b[0]}</div><div class="sub-value">Assuming 2 sharing</div></div>
+        <div class="summary-card"><div class="mini-label">For two*</div><div class="big-value">${b[1]}</div><div class="sub-value">Planning range</div></div>
+        <div class="summary-card"><div class="mini-label">Style</div><div class="big-value">${state.budget==='medium'?'Smart comfort':'Luxury'}</div><div class="sub-value">${b[2]}</div></div>`;
+    }
+
+    function renderFlights(){
+      const plan=itineraries[state.destination][state.days];
+      const isThai=state.destination==='thailand';
+      $('#seasonNotice').textContent=monthAdvice();
+      $('#flightGrid').innerHTML=`
+        <article class="card"><span class="tag official">Recommended routing</span><h3>${plan.airports}</h3><p>${isThai?'Search multi-city and one-way combinations. BKK and DMK are different Bangkok airports—never assume an easy short connection between them.':'Use an open-jaw ticket for 7/10 days: fly into Kochi (COK) and out of Thiruvananthapuram (TRV), avoiding a long return drive.'}</p><div class="action-row"><a class="link-btn" target="_blank" href="https://www.google.com/travel/flights?q=${encodeURIComponent(isThai?'Flights from Hyderabad to Bangkok Thailand':'Flights from Hyderabad to Kochi and Thiruvananthapuram to Hyderabad')}">Compare flights ↗</a></div></article>
+        <article class="card"><span class="tag">Booking rules</span><h3>Build in safe buffers</h3><p>Reach HYD 3 hours before an international flight or 2 hours before domestic. For separate tickets, allow 3+ hours plus airport-transfer time; overnight if changing BKK ↔ DMK. Add checked baggage to the total—not just the headline fare.</p></article>
+        <article class="card"><span class="tag">Fare planning</span><h3>${isThai?'Typical HYD return: ₹25k–55k+':'Typical HYD return/open-jaw: ₹9k–22k+'}</h3><p>These are broad economy planning bands, not live fares. Weekends, holidays, festivals and short booking windows can cost more. Compare direct versus one-stop duration, baggage and change rules.</p></article>
+        <article class="card"><span class="tag">At the airport</span><h3>Keep one offline folder</h3><p>${isThai?'Passport, visa/eligibility proof, TDAC, return/onward ticket, first hotel address, insurance and sufficient-funds evidence.':'Accepted photo ID, tickets, hotel details, cab confirmation and insurance.'} Screenshot every confirmation and keep essential medicines in cabin baggage.</p></article>`;
+    }
+
+    function renderTimeline(){
+      const plan=itineraries[state.destination][state.days];$('#paceNote').textContent=plan.pace;
+      $('#timeline').innerHTML=plan.days.map((d,i)=>`<article class="day"><div class="day-no">${i+1}</div><div class="day-card"><h3>${d[0]}</h3><div class="day-meta">${d[1]}</div><div class="day-slots"><div class="slot"><b>Morning</b>${d[2]}</div><div class="slot"><b>Afternoon</b>${d[3]}</div><div class="slot"><b>Evening</b>${d[4]}</div></div></div></article>`).join('');
+    }
+
+    function usedCities(){return new Set(itineraries[state.destination][state.days].route);}
+    function renderHotels(){
+      const cities=usedCities();let list=hotels[state.destination].filter(h=>cities.has(h.city) && (state.hotelFilter==='all'||h.style===state.budget));
+      $('#hotelGrid').innerHTML=list.map(h=>`<article class="card hotel-card"><div class="place">${h.city}</div><div><span class="tag ${h.style==='luxury'?'luxury':''}">${h.style}</span></div><h3>${h.name}</h3><p class="price">${h.price} / room / night</p><p class="address">${h.address}</p><p><strong>${h.phone}</strong></p><div class="action-row"><a class="link-btn" target="_blank" href="${h.url}">Official site ↗</a><a class="link-btn" target="_blank" href="${maps(h.name+' '+h.address)}">Map ↗</a><a class="link-btn" href="tel:${h.phone.replace(/[^+\d]/g,'')}">Call</a></div></article>`).join('') || '<div class="notice">No matching hotel in this route.</div>';
+    }
+
+    function renderFood(){
+      const cities=usedCities();const list=food[state.destination].filter(x=>cities.has(x[0]));
+      $('#foodGrid').innerHTML=list.map(x=>`<article class="card food-card"><div class="place">${x[0]}</div><div><span class="tag ${/veg/i.test(x[2])?'veg':/halal/i.test(x[2])?'halal':''}">${x[2]}</span></div><h3>${x[1]}</h3><p class="address">${x[3]}</p><p>${x[4]}</p><div class="action-row"><a class="link-btn" target="_blank" href="${maps(x[1]+' '+x[3])}">Map, hours & call ↗</a></div></article>`).join('');
+    }
+
+    function renderTransport(){
+      $('#transportTable').innerHTML=`<table class="transport-table"><thead><tr><th>Use case</th><th>How to book</th><th>Important detail</th></tr></thead><tbody>${transport[state.destination].map(r=>`<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>`;
+    }
+
+    function checklistCard(title,items,key){
+      return `<article class="card check-card"><h3>${title}</h3><div class="checklist">${items.map((x,i)=>{const id=`${state.destination}-${state.days}-${key}-${i}`;return `<label class="check-item"><input type="checkbox" data-check="${id}" ${localStorage.getItem(id)==='1'?'checked':''}><span>${x}</span></label>`}).join('')}</div><div class="progress-wrap"><div class="progress-bar"></div></div><div class="progress-text"></div></article>`;
+    }
+    function updateProgress(){document.querySelectorAll('.check-card').forEach(c=>{const all=[...c.querySelectorAll('input')],done=all.filter(x=>x.checked).length;c.querySelector('.progress-bar').style.width=`${all.length?done/all.length*100:0}%`;c.querySelector('.progress-text').textContent=`${done} of ${all.length} completed`;});}
+    function renderChecks(){
+      $('#checkGrid').innerHTML=checklistCard('Places to experience',attractions[state.destination][state.days],'visit')+checklistCard('Pack for this trip',[...packingCommon,...packing[state.destination]],'pack')+checklistCard('Do before booking',['Confirm dates and leave approval','Check passport/ID validity and exact ticket name','Compare flight baggage + change fees','Reserve refundable hotels first','Book airport and intercity transfers in writing','Buy suitable travel insurance','Share itinerary with family','Save confirmations offline','Set bank card travel/international controls','Check weather and government advisories 48 hours before'], 'before')+checklistCard('Usually not required',notNeeded[state.destination],'notneeded');
+      document.querySelectorAll('[data-check]').forEach(el=>el.addEventListener('change',()=>{localStorage.setItem(el.dataset.check,el.checked?'1':'0');updateProgress()}));updateProgress();
+    }
+
+    function renderRules(){
+      $('#rulesAccordion').innerHTML=rules[state.destination].map((r,i)=>`<details ${i===0?'open':''}><summary>${r[0]}</summary><p>${r[1]}</p></details>`).join('')+`<details><summary>What to confirm 48 hours before departure</summary><ul><li>Flight status, terminal and baggage allowance</li><li>Weather, flood/sea/road warnings and attraction closures</li><li>Hotel and driver confirmation with correct arrival time</li><li>Entry/ID documents and insurance saved offline</li><li>Restaurant hours and dietary arrangements</li><li>Enough medicine plus prescription</li></ul></details>`;
+    }
+
+    function renderEmergency(){
+      $('#emergencyGrid').innerHTML=emergency[state.destination].map(x=>`<div class="em-item"><a href="tel:${x[0].replace(/[^+\d]/g,'')}">${x[0]}</a><span>${x[1]}</span></div>`).join('');
+    }
+    function renderSources(){
+      $('#sourceList').innerHTML=sources[state.destination].map(x=>`<li><a target="_blank" rel="noopener" href="${x[1]}">${x[0]} ↗</a></li>`).join('')+`<li>Hotel addresses and telephone numbers are linked to official property pages where available. Reconfirm before payment; never trust an unsolicited payment message.</li>`;
+    }
+    function renderAll(){renderSummary();renderFlights();renderTimeline();renderHotels();renderFood();renderTransport();renderChecks();renderRules();renderEmergency();renderSources();}
+    $('#destination').addEventListener('change',e=>{state.destination=e.target.value;renderAll()});
+    $('#duration').addEventListener('change',e=>{state.days=+e.target.value;renderAll()});
+    $('#budget').addEventListener('change',e=>{state.budget=e.target.value;renderSummary();renderHotels()});
+    $('#startDate').addEventListener('change',()=>renderFlights());
+    document.querySelectorAll('.hotel-filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.hotel-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.hotelFilter=b.dataset.filter;renderHotels()}));
+    const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+30);$('#startDate').min=new Date().toISOString().split('T')[0];$('#startDate').value=tomorrow.toISOString().split('T')[0];
+    renderAll();
+  </script>
+</body>
+</html>
