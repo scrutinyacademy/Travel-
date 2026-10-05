@@ -40,6 +40,7 @@
     .action-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.link-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #d9e4e2;border-radius:10px;padding:7px 10px;font-size:.78rem;font-weight:800;background:white}.link-btn:hover{text-decoration:none;background:#eff8f7}
     .timeline{position:relative;display:grid;gap:16px}.timeline:before{content:"";position:absolute;left:25px;top:16px;bottom:16px;width:2px;background:linear-gradient(var(--coral),var(--teal))}.day{display:grid;grid-template-columns:52px 1fr;gap:15px;position:relative}.day-no{width:52px;height:52px;border-radius:17px;background:linear-gradient(135deg,var(--coral),#ec9a69);color:white;display:grid;place-items:center;font-weight:900;box-shadow:0 7px 20px rgba(239,111,97,.28);z-index:1}.day-card{background:var(--card);border:1px solid white;border-radius:20px;padding:20px;box-shadow:0 9px 28px rgba(44,56,62,.08)}.day-card h3{margin:0 0 3px}.day-meta{font-size:.79rem;color:var(--teal);font-weight:800;margin-bottom:12px}.day-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.slot{padding:12px;border-radius:13px;background:#f8f6f2;font-size:.85rem}.slot b{display:block;margin-bottom:3px;color:var(--ink)}
     .filters{display:flex;gap:8px;margin-bottom:14px}.filters button{border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px;font-weight:750;cursor:pointer}.filters button.active{background:var(--ink);color:white}
+    .price-filter{background:linear-gradient(135deg,#fff,#f4fbfa);border:1px solid white;box-shadow:var(--shadow);border-radius:20px;padding:18px 22px;margin-bottom:16px}.price-filter-top{display:flex;justify-content:space-between;align-items:center;gap:16px}.price-filter strong{font-size:1.15rem;color:var(--teal)}.price-filter input[type=range]{width:100%;height:7px;margin:14px 0 4px;accent-color:var(--teal);cursor:pointer}.range-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:.76rem}.hotel-count{font-size:.82rem;color:var(--muted)}
     .hotel-card .place,.food-card .place{color:var(--coral);font-weight:800;font-size:.77rem;text-transform:uppercase;letter-spacing:.07em}.address{font-size:.82rem!important;min-height:40px}.price{font-weight:850;color:var(--ink)!important}.hotel-grid .card,.food-grid .card{display:flex;flex-direction:column}.hotel-grid .action-row,.food-grid .action-row{margin-top:auto;padding-top:8px}
     .transport-table{width:100%;border-collapse:collapse;background:white;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.transport-table th,.transport-table td{text-align:left;padding:14px;border-bottom:1px solid #eee7df;font-size:.88rem;vertical-align:top}.transport-table th{background:#eef7f5;color:#176b6c}.transport-table tr:last-child td{border-bottom:0}
     .check-card h3{margin-top:0}.checklist{display:grid;gap:7px}.check-item{display:flex;gap:10px;align-items:flex-start;background:#faf8f4;padding:9px 10px;border-radius:10px;font-size:.87rem}.check-item input{accent-color:var(--teal);margin-top:3px}.progress-wrap{height:9px;background:#ebe7df;border-radius:99px;overflow:hidden;margin-top:12px}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--coral),var(--gold),var(--teal));transition:.25s}.progress-text{font-size:.78rem;color:var(--muted);margin-top:5px}
@@ -93,7 +94,9 @@
 
     <section id="hotels">
       <div class="section-head"><div><div class="eyebrow">Curated stays</div><h2>Hotels to shortlist</h2></div><p>Prices shown are typical planning bands per room/night, not live quotes. Book refundable rates from the official hotel or a trusted platform.</p></div>
-      <div class="filters"><button class="hotel-filter active" data-filter="selected">Selected style</button><button class="hotel-filter" data-filter="all">Show both</button></div>
+      <div class="price-filter"><div class="price-filter-top"><div><label for="hotelPrice">Maximum nightly hotel price</label><strong id="hotelPriceValue">₹90,000+</strong></div><div class="hotel-count" id="hotelCount"></div></div><input id="hotelPrice" type="range" min="1500" max="90000" value="90000" step="500"><div class="range-labels"><span>₹1,500 • backpacker</span><span>₹90,000+ • exceptional luxury</span></div></div>
+      <div class="filters"><button class="hotel-filter active" data-filter="all">All styles</button><button class="hotel-filter" data-filter="budget">Budget</button><button class="hotel-filter" data-filter="medium">Medium</button><button class="hotel-filter" data-filter="luxury">Luxury</button></div>
+      <div class="notice teal">Review scores are a planning snapshot checked in October 2026. Tap “Latest reviews” to see the current score, recent guest comments and exact rate for Nausheen’s dates.</div>
       <div class="hotel-grid" id="hotelGrid"></div>
     </section>
 
@@ -132,7 +135,7 @@
   <script>
     const $ = s => document.querySelector(s);
     const maps = q => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
-    const state = {destination:'thailand',days:7,budget:'medium',hotelFilter:'selected'};
+    const state = {destination:'thailand',days:7,budget:'medium',hotelFilter:'all',maxHotelPrice:90000};
 
     const itineraries = {
       thailand:{
@@ -204,26 +207,36 @@
 
     const hotels={
       thailand:[
-        {city:'Bangkok',style:'medium',name:'Centre Point Plus Hotel Silom',price:'Usually ₹5,500–10,000',address:'1522/2 Soi Kaysorn 1, Charoenkrung Rd, Bang Rak, Bangkok 10500',phone:'+66 2 630 6345',url:'https://www.centrepoint.com/silom/contact'},
-        {city:'Bangkok',style:'luxury',name:'Mandarin Oriental, Bangkok',price:'Usually ₹40,000–85,000+',address:'48 Oriental Avenue, Bang Rak, Bangkok 10500',phone:'+66 2 659 9000',url:'https://www.mandarinoriental.com/en/bangkok/chao-phraya-river'},
-        {city:'Chiang Mai',style:'medium',name:'U Nimman Chiang Mai',price:'Usually ₹6,000–12,000',address:'1 Nimmanhaemin Rd, Suthep, Mueang Chiang Mai 50200',phone:'+66 52 005 111',url:'https://www.uhotelsresorts.com/unimmanchiangmai'},
-        {city:'Chiang Mai',style:'luxury',name:'137 Pillars House',price:'Usually ₹28,000–55,000',address:'2 Soi 1, Nawatgate Rd, Wat Ket, Mueang Chiang Mai 50000',phone:'+66 53 247 788',url:'https://137pillarshotels.com/chiangmai/'},
-        {city:'Krabi',style:'medium',name:'Sea Seeker Krabi Resort',price:'Usually ₹3,500–8,000',address:'963 Moo 2, Ao Nang, Mueang Krabi 81180',phone:'+66 75 817 777',url:'https://www.seaseekerkrabiresort.com/'},
-        {city:'Krabi',style:'luxury',name:'Rayavadee',price:'Usually ₹45,000–90,000+',address:'214 Moo 2, Ao Nang, Mueang Krabi 81000',phone:'+66 75 817 630',url:'https://www.rayavadee.com/'},
-        {city:'Phuket',style:'medium',name:'Holiday Inn Resort Phuket',price:'Usually ₹8,000–16,000',address:'52 Thaweewong Rd, Patong Beach, Kathu, Phuket 83150',phone:'+66 76 370 200',url:'https://holidayinnresortphuket.com/'},
-        {city:'Phuket',style:'luxury',name:'The Shore at Katathani (Adults only)',price:'Usually ₹35,000–75,000+',address:'14 Kata Noi Rd, Karon, Mueang Phuket 83100',phone:'+66 76 330 124',url:'https://www.theshorephuket.com/'}
+        {city:'Bangkok',style:'budget',name:'Once Again Hostel',min:1500,max:3000,rating:'4.6/5',price:'Usually ₹1,500–3,000',address:'22 Soi Samran Rat, Maha Chai Rd, Phra Nakhon, Bangkok 10200',phone:'+66 2 622 3301',url:'https://onceagainhostel.com/'},
+        {city:'Bangkok',style:'medium',name:'Centre Point Plus Hotel Silom',min:5500,max:10000,rating:'4.4/5',price:'Usually ₹5,500–10,000',address:'1522/2 Soi Kaysorn 1, Charoenkrung Rd, Bang Rak, Bangkok 10500',phone:'+66 2 630 6345',url:'https://www.centrepoint.com/silom/contact'},
+        {city:'Bangkok',style:'luxury',name:'Mandarin Oriental, Bangkok',min:40000,max:85000,rating:'4.7/5',price:'Usually ₹40,000–85,000+',address:'48 Oriental Avenue, Bang Rak, Bangkok 10500',phone:'+66 2 659 9000',url:'https://www.mandarinoriental.com/en/bangkok/chao-phraya-river'},
+        {city:'Chiang Mai',style:'budget',name:'The Common Hostel',min:1500,max:3200,rating:'4.6/5',price:'Usually ₹1,500–3,200',address:'54/2–3 Singharat Rd, Si Phum, Mueang Chiang Mai 50200',phone:'+66 98 615 4064',url:'https://www.thecommonhostel.com/'},
+        {city:'Chiang Mai',style:'medium',name:'U Nimman Chiang Mai',min:6000,max:12000,rating:'4.6/5',price:'Usually ₹6,000–12,000',address:'1 Nimmanhaemin Rd, Suthep, Mueang Chiang Mai 50200',phone:'+66 52 005 111',url:'https://www.uhotelsresorts.com/unimmanchiangmai'},
+        {city:'Chiang Mai',style:'luxury',name:'137 Pillars House',min:28000,max:55000,rating:'4.7/5',price:'Usually ₹28,000–55,000',address:'2 Soi 1, Nawatgate Rd, Wat Ket, Mueang Chiang Mai 50000',phone:'+66 53 247 788',url:'https://137pillarshotels.com/chiangmai/'},
+        {city:'Krabi',style:'budget',name:'Wake Up Aonang Hotel',min:1400,max:3200,rating:'4.3/5',price:'Usually ₹1,400–3,200',address:'121/2 Moo 2, Ao Nang, Mueang Krabi 81180',phone:'+66 75 695 027',url:'https://www.wakeupkrabi.com/'},
+        {city:'Krabi',style:'medium',name:'Sea Seeker Krabi Resort',min:3500,max:8000,rating:'4.5/5',price:'Usually ₹3,500–8,000',address:'963 Moo 2, Ao Nang, Mueang Krabi 81180',phone:'+66 75 817 777',url:'https://www.seaseekerkrabiresort.com/'},
+        {city:'Krabi',style:'luxury',name:'Rayavadee',min:45000,max:90000,rating:'4.8/5',price:'Usually ₹45,000–90,000+',address:'214 Moo 2, Ao Nang, Mueang Krabi 81000',phone:'+66 75 817 630',url:'https://www.rayavadee.com/'},
+        {city:'Phuket',style:'budget',name:'Lub d Phuket Patong',min:1500,max:4500,rating:'4.5/5',price:'Usually ₹1,500–4,500',address:'5/5 Sawatdirak Rd, Patong, Kathu, Phuket 83150',phone:'+66 76 530 100',url:'https://lubd.com/destination/phuket-patong/'},
+        {city:'Phuket',style:'medium',name:'Holiday Inn Resort Phuket',min:8000,max:16000,rating:'4.5/5',price:'Usually ₹8,000–16,000',address:'52 Thaweewong Rd, Patong Beach, Kathu, Phuket 83150',phone:'+66 76 370 200',url:'https://holidayinnresortphuket.com/'},
+        {city:'Phuket',style:'luxury',name:'The Shore at Katathani (Adults only)',min:35000,max:75000,rating:'4.8/5',price:'Usually ₹35,000–75,000+',address:'14 Kata Noi Rd, Karon, Mueang Phuket 83100',phone:'+66 76 330 124',url:'https://www.theshorephuket.com/'}
       ],
       kerala:[
-        {city:'Kochi',style:'medium',name:'Fragrant Nature Kochi',price:'Usually ₹6,000–12,000',address:'Near SBI Calvathy, Calvathy Bazar Rd, Fort Kochi, Kerala 682001',phone:'+91 484 221 3600',url:'https://www.fragrantnature.com/fort-kochi/'},
-        {city:'Kochi',style:'luxury',name:'Grand Hyatt Kochi Bolgatty',price:'Usually ₹14,000–32,000',address:'Bolgatty Island, Kochi, Kerala 682504',phone:'+91 484 266 1234',url:'https://www.hyatt.com/grand-hyatt/en-US/cokgh-grand-hyatt-kochi-bolgatty'},
-        {city:'Munnar',style:'medium',name:'KTDC Tea County',price:'Usually ₹5,000–10,000',address:'Ikka Nagar, Munnar, Kerala 685612',phone:'+91 471 272 1243',url:'https://www.ktdc.com/tea-county/'},
-        {city:'Munnar',style:'luxury',name:'Windermere Estate',price:'Usually ₹18,000–32,000',address:'Pothamedu, Munnar, Kerala 685612',phone:'+91 4865 230 512',url:'https://www.windermeremunnar.com/'},
-        {city:'Thekkady',style:'medium',name:'KTDC Aranya Nivas',price:'Usually ₹5,500–11,000',address:'Inside Periyar Tiger Reserve, Thekkady, Kerala 685536',phone:'+91 4869 222 023',url:'https://www.ktdc.com/aranya-nivas/'},
-        {city:'Thekkady',style:'luxury',name:'Spice Village – CGH Earth',price:'Usually ₹18,000–34,000',address:'Thekkady–Kumily Rd, Thekkady, Kerala 685536',phone:'+91 4869 222 314',url:'https://www.cghearth.com/spice-village'},
-        {city:'Varkala',style:'medium',name:'Mad About Coco',price:'Usually ₹3,500–7,500',address:'North Cliff, Kurakkanni, Varkala, Kerala 695141',phone:'+91 81380 77370',url:'https://madaboutcoco.com/'},
-        {city:'Varkala',style:'luxury',name:'Gateway Varkala',price:'Usually ₹11,000–22,000',address:'Janardhanapuram, Varkala, Kerala 695141',phone:'+91 470 277 3300',url:'https://www.gateway-hotels.com/en-in/hotels/gateway-varkala'},
-        {city:'Kovalam',style:'medium',name:'Uday Samudra Leisure Beach Hotel',price:'Usually ₹6,000–12,000',address:'GV Raja Rd, Samudra Beach, Kovalam, Kerala 695527',phone:'+91 93872 17501',url:'https://www.udshotels.com/uday-samudra-leisure-beach-hotel-spa/'},
-        {city:'Kovalam',style:'luxury',name:'The Leela Kovalam, A Raviz Hotel',price:'Usually ₹20,000–45,000',address:'Kovalam, Thiruvananthapuram, Kerala 695527',phone:'+91 471 669 1111',url:'https://www.theleela.com/the-leela-kovalam-a-raviz-hotel'}
+        {city:'Kochi',style:'budget',name:'Zostel Kochi (Fort Kochi)',min:900,max:2800,rating:'4.5/5',price:'Usually ₹900–2,800',address:'1/751A, New Rd, Kunnumpuram, Fort Kochi, Kerala 682001',phone:'+91 22 4896 2266',url:'https://www.zostel.com/zostel/kochi/'},
+        {city:'Kochi',style:'medium',name:'Fragrant Nature Kochi',min:6000,max:12000,rating:'4.5/5',price:'Usually ₹6,000–12,000',address:'Near SBI Calvathy, Calvathy Bazar Rd, Fort Kochi, Kerala 682001',phone:'+91 484 221 3600',url:'https://www.fragrantnature.com/fort-kochi/'},
+        {city:'Kochi',style:'luxury',name:'Grand Hyatt Kochi Bolgatty',min:14000,max:32000,rating:'4.6/5',price:'Usually ₹14,000–32,000',address:'Bolgatty Island, Kochi, Kerala 682504',phone:'+91 484 266 1234',url:'https://www.hyatt.com/grand-hyatt/en-US/cokgh-grand-hyatt-kochi-bolgatty'},
+        {city:'Munnar',style:'budget',name:'Zostel Munnar',min:900,max:3000,rating:'4.4/5',price:'Usually ₹900–3,000',address:'Moolakada, Pallivasal, Munnar, Kerala 685612',phone:'+91 22 4896 2266',url:'https://www.zostel.com/zostel/munnar/'},
+        {city:'Munnar',style:'medium',name:'KTDC Tea County',min:5000,max:10000,rating:'4.4/5',price:'Usually ₹5,000–10,000',address:'Ikka Nagar, Munnar, Kerala 685612',phone:'+91 471 272 1243',url:'https://www.ktdc.com/tea-county/'},
+        {city:'Munnar',style:'luxury',name:'Windermere Estate',min:18000,max:32000,rating:'4.6/5',price:'Usually ₹18,000–32,000',address:'Pothamedu, Munnar, Kerala 685612',phone:'+91 4865 230 512',url:'https://www.windermeremunnar.com/'},
+        {city:'Thekkady',style:'budget',name:'Chrissie’s Hotel',min:2500,max:5000,rating:'4.7/5',price:'Usually ₹2,500–5,000',address:'Bypass Rd, Thekkady, Kumily, Kerala 685509',phone:'+91 4869 222 114',url:'https://www.chrissieshotel.com/'},
+        {city:'Thekkady',style:'medium',name:'KTDC Aranya Nivas',min:5500,max:11000,rating:'4.3/5',price:'Usually ₹5,500–11,000',address:'Inside Periyar Tiger Reserve, Thekkady, Kerala 685536',phone:'+91 4869 222 023',url:'https://www.ktdc.com/aranya-nivas/'},
+        {city:'Thekkady',style:'luxury',name:'Spice Village – CGH Earth',min:18000,max:34000,rating:'4.7/5',price:'Usually ₹18,000–34,000',address:'Thekkady–Kumily Rd, Thekkady, Kerala 685536',phone:'+91 4869 222 314',url:'https://www.cghearth.com/spice-village'},
+        {city:'Alappuzha',style:'budget',name:'Zostel Alleppey',min:900,max:2800,rating:'4.4/5',price:'Usually ₹900–2,800',address:'Beach Rd, Near Vijay Beach Park, Alappuzha, Kerala 688012',phone:'+91 22 4896 2266',url:'https://www.zostel.com/zostel/alleppey/'},
+        {city:'Alappuzha',style:'medium',name:'Uday Backwater Resort',min:6500,max:13000,rating:'4.4/5',price:'Usually ₹6,500–13,000',address:'Punnamada, Alappuzha, Kerala 688006',phone:'+91 477 223 6000',url:'https://www.udshotels.com/uday-backwater-resort/'},
+        {city:'Varkala',style:'budget',name:'Zostel Varkala',min:900,max:3000,rating:'4.5/5',price:'Usually ₹900–3,000',address:'Cliff Beach, Kurakkanni, Varkala, Kerala 695141',phone:'+91 22 4896 2266',url:'https://www.zostel.com/zostel/varkala/'},
+        {city:'Varkala',style:'medium',name:'Mad About Coco',min:3500,max:7500,rating:'4.4/5',price:'Usually ₹3,500–7,500',address:'North Cliff, Kurakkanni, Varkala, Kerala 695141',phone:'+91 81380 77370',url:'https://madaboutcoco.com/'},
+        {city:'Varkala',style:'luxury',name:'Gateway Varkala',min:11000,max:22000,rating:'4.5/5',price:'Usually ₹11,000–22,000',address:'Janardhanapuram, Varkala, Kerala 695141',phone:'+91 470 277 3300',url:'https://www.gateway-hotels.com/en-in/hotels/gateway-varkala'},
+        {city:'Kovalam',style:'medium',name:'Uday Samudra Leisure Beach Hotel',min:6000,max:12000,rating:'4.3/5',price:'Usually ₹6,000–12,000',address:'GV Raja Rd, Samudra Beach, Kovalam, Kerala 695527',phone:'+91 93872 17501',url:'https://www.udshotels.com/uday-samudra-leisure-beach-hotel-spa/'},
+        {city:'Kovalam',style:'luxury',name:'The Leela Kovalam, A Raviz Hotel',min:20000,max:45000,rating:'4.6/5',price:'Usually ₹20,000–45,000',address:'Kovalam, Thiruvananthapuram, Kerala 695527',phone:'+91 471 669 1111',url:'https://www.theleela.com/the-leela-kovalam-a-raviz-hotel'}
       ]
     };
 
@@ -360,8 +373,10 @@
 
     function usedCities(){return new Set(itineraries[state.destination][state.days].route);}
     function renderHotels(){
-      const cities=usedCities();let list=hotels[state.destination].filter(h=>cities.has(h.city) && (state.hotelFilter==='all'||h.style===state.budget));
-      $('#hotelGrid').innerHTML=list.map(h=>`<article class="card hotel-card"><div class="place">${h.city}</div><div><span class="tag ${h.style==='luxury'?'luxury':''}">${h.style}</span></div><h3>${h.name}</h3><p class="price">${h.price} / room / night</p><p class="address">${h.address}</p><p><strong>${h.phone}</strong></p><div class="action-row"><a class="link-btn" target="_blank" href="${h.url}">Official site ↗</a><a class="link-btn" target="_blank" href="${maps(h.name+' '+h.address)}">Map ↗</a><a class="link-btn" href="tel:${h.phone.replace(/[^+\d]/g,'')}">Call</a></div></article>`).join('') || '<div class="notice">No matching hotel in this route.</div>';
+      const cities=usedCities();let list=hotels[state.destination].filter(h=>cities.has(h.city) && h.min<=state.maxHotelPrice && (state.hotelFilter==='all'||h.style===state.hotelFilter)).sort((a,b)=>a.min-b.min);
+      $('#hotelPriceValue').textContent=state.maxHotelPrice>=90000?'₹90,000+':`₹${state.maxHotelPrice.toLocaleString('en-IN')}`;
+      $('#hotelCount').textContent=`${list.length} hotel option${list.length===1?'':'s'} • lowest price first`;
+      $('#hotelGrid').innerHTML=list.map(h=>`<article class="card hotel-card"><div class="place">${h.city}</div><div><span class="tag ${h.style==='luxury'?'luxury':h.style==='budget'?'veg':''}">${h.style}</span></div><h3>${h.name}</h3><p class="price">${h.price} / room / night</p><p><strong>★ ${h.rating}</strong> review snapshot</p><p class="address">${h.address}</p><p><strong>${h.phone}</strong></p><div class="action-row"><a class="link-btn" target="_blank" href="${h.url}">Official site ↗</a><a class="link-btn" target="_blank" href="${maps(h.name+' '+h.address)}">Latest reviews ↗</a><a class="link-btn" href="tel:${h.phone.replace(/[^+\d]/g,'')}">Call</a></div></article>`).join('') || '<div class="notice">No hotel is within this price. Move the slider right or choose another style.</div>';
     }
 
     function renderFood(){
@@ -397,6 +412,7 @@
     $('#duration').addEventListener('change',e=>{state.days=+e.target.value;renderAll()});
     $('#budget').addEventListener('change',e=>{state.budget=e.target.value;renderSummary();renderHotels()});
     $('#startDate').addEventListener('change',()=>renderFlights());
+    $('#hotelPrice').addEventListener('input',e=>{state.maxHotelPrice=+e.target.value;renderHotels()});
     document.querySelectorAll('.hotel-filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.hotel-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.hotelFilter=b.dataset.filter;renderHotels()}));
     const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+30);$('#startDate').min=new Date().toISOString().split('T')[0];$('#startDate').value=tomorrow.toISOString().split('T')[0];
     renderAll();
